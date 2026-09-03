@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Selichot for the Yamim Noraim, opened to the correct day for today's Hebrew date. Full Hebrew text in Nusach Sefard (Polin), Nusach Ashkenaz (Lita) and Edot HaMizrach.">
+<meta name="theme-color" content="#EBEEF1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0E13" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Selichot">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Ashmoret Selichot</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Noto+Serif+Hebrew:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#EBEEF1; --surface:#FCFDFE; --sunk:#E1E6EA;
+  --ink:#131A21; --ink2:#4B5762; --ink3:#7D8994;
+  --line:#D2D9DF; --line2:#B6C0C9;
+  --tekhelet:#2C4C86; --tekhelet-ink:#2C4C86; --tekhelet-soft:#DFE7F4;
+  --brass:#8A6212; --brass-soft:#F2E6C9;
+  --shadow:0 1px 2px rgba(19,26,33,.06),0 8px 24px -12px rgba(19,26,33,.18);
+  --fs:20px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0A0E13; --surface:#121A22; --sunk:#0E151C;
+    --ink:#E7EAED; --ink2:#A3AFBA; --ink3:#6E7B87;
+    --line:#1F2932; --line2:#324150;
+    --tekhelet:#8FB2E8; --tekhelet-ink:#8FB2E8; --tekhelet-soft:#152539;
+    --brass:#D8AE5D; --brass-soft:#291F10;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0A0E13; --surface:#121A22; --sunk:#0E151C;
+  --ink:#E7EAED; --ink2:#A3AFBA; --ink3:#6E7B87;
+  --line:#1F2932; --line2:#324150;
+  --tekhelet:#8FB2E8; --tekhelet-ink:#8FB2E8; --tekhelet-soft:#152539;
+  --brass:#D8AE5D; --brass-soft:#291F10;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -14px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;direction:ltr;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  -webkit-text-size-adjust:100%;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--tekhelet);outline-offset:2px;border-radius:4px}
+
+#prog{position:fixed;inset:0 auto auto 0;height:2px;width:0;background:var(--brass);z-index:60;transition:width .12s linear}
+@media (prefers-reduced-motion:reduce){#prog{transition:none}}
+header.bar{
+  position:sticky;top:0;z-index:50;background:var(--paper);
+  border-bottom:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;
+  display:flex;align-items:center;gap:8px;
+}
+.bar .who{flex:1;min-width:0;direction:rtl;text-align:right}
+.bar .who b{display:block;font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:17px;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .who span{display:block;font-size:11px;color:var(--ink3);letter-spacing:.04em;direction:ltr;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);
+  display:grid;place-items:center;flex:none;font-size:13px;font-weight:600;color:var(--ink2)}
+.iconbtn:active{background:var(--sunk)}
+.iconbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
+
+.today{
+  margin:16px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.today .top{padding:16px 16px 14px;display:flex;gap:14px;align-items:flex-start}
+.today .stamp{
+  flex:none;width:66px;text-align:center;border:1px solid var(--line2);border-radius:10px;padding:8px 4px;
+  background:var(--sunk);
+}
+.today .stamp .d{font-family:"Frank Ruhl Libre",serif;font-size:26px;line-height:1;font-weight:700;direction:rtl}
+.today .stamp .m{font-size:11px;color:var(--ink2);margin-top:5px;direction:rtl;font-family:"Noto Serif Hebrew",serif}
+.today .meta{flex:1;min-width:0}
+.eyebrow{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.today h1{margin:5px 0 3px;font-family:"Frank Ruhl Libre",serif;font-size:27px;line-height:1.15;direction:rtl;font-weight:700;text-wrap:balance}
+.today .civil{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.note{
+  display:flex;gap:9px;padding:11px 16px;border-top:1px solid var(--line);
+  background:var(--brass-soft);font-size:12.5px;line-height:1.55;color:var(--ink2)
+}
+.note b{color:var(--ink)}
+.note .dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--brass);margin-top:6px}
+.note.plain{background:var(--sunk)}
+.note.plain .dot{background:var(--ink3)}
+.note button{text-decoration:underline;font-weight:600;padding:0}
+.note .lk{color:var(--tekhelet-ink)}
+.note .lkb{color:var(--brass)}
+
+.nusach{display:flex;gap:6px;margin:12px 0 0;background:var(--sunk);padding:4px;border-radius:12px;border:1px solid var(--line)}
+.nusach button{flex:1;padding:9px 4px;border-radius:9px;text-align:center;line-height:1.15;color:var(--ink2)}
+.nusach button .n1{display:block;font-family:"Noto Serif Hebrew",serif;font-size:14px;direction:rtl}
+.nusach button .n2{display:block;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:3px;color:var(--ink3)}
+.nusach button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+.nusach button[aria-pressed="true"] .n2{color:var(--tekhelet-ink)}
+
+#seder{margin-top:26px}
+.piyut{margin:0 0 34px}
+.phead{display:flex;align-items:baseline;gap:10px;direction:rtl;border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:13px}
+.phead .ord{
+  flex:none;font-family:"Frank Ruhl Libre",serif;font-size:13px;font-weight:700;color:var(--surface);
+  background:var(--tekhelet);border-radius:6px;min-width:24px;height:22px;display:grid;place-items:center;padding:0 5px
+}
+.phead .pt{flex:1;min-width:0;font-family:"Frank Ruhl Libre",serif;font-size:15px;font-weight:500;color:var(--ink2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rubric{direction:rtl;font-family:"Noto Serif Hebrew",serif;font-size:12.5px;color:var(--brass);margin:-4px 0 12px;line-height:1.5}
+.ln{
+  direction:rtl;font-family:"Noto Serif Hebrew",serif;font-size:var(--fs);line-height:2.05;
+  margin:0 0 .55em;text-align:right;
+}
+.ln b{font-weight:600;color:var(--tekhelet-ink)}
+.ln small{display:block;font-size:.66em;color:var(--ink3);line-height:1.6;margin:.45em 0;font-style:normal}
+.ln:last-child{margin-bottom:0}
+
+.daynav{display:flex;gap:10px;margin:6px 0 30px}
+.daynav button{
+  flex:1;padding:14px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  box-shadow:var(--shadow);text-align:center;line-height:1.2;min-width:0
+}
+.daynav button:disabled{opacity:.4;box-shadow:none;cursor:default}
+.daynav .lbl{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.daynav .val{display:block;font-family:"Frank Ruhl Libre",serif;font-size:15px;margin-top:4px;direction:rtl;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.colophon{border-top:1px solid var(--line);padding-top:16px;font-size:11.5px;line-height:1.7;color:var(--ink3)}
+.colophon a{color:var(--ink2)}
+.colophon strong{color:var(--ink2)}
+.colophon p{margin:0 0 9px}
+
+.scrim{position:fixed;inset:0;background:rgba(6,10,14,.5);z-index:70;opacity:0;pointer-events:none;transition:opacity .18s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;inset:auto 0 0 0;z-index:80;background:var(--surface);border-top:1px solid var(--line2);
+  border-radius:16px 16px 0 0;max-height:84vh;display:flex;flex-direction:column;
+  transform:translateY(101%);transition:transform .24s cubic-bezier(.32,.72,0,1);
+  padding-bottom:env(safe-area-inset-bottom);max-width:44rem;margin:0 auto
+}
+.sheet.open{transform:none}
+@media (prefers-reduced-motion:reduce){.sheet,.scrim{transition:none}}
+.sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line2);margin:8px auto 0}
+.tabs{display:flex;gap:4px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;padding:9px 2px;border-radius:9px;font-size:12.5px;color:var(--ink3);font-weight:500}
+.tabs button[aria-selected="true"]{background:var(--tekhelet-soft);color:var(--tekhelet-ink);font-weight:600}
+.tabs .close{flex:none;width:36px;color:var(--ink3);font-size:15px}
+.sheetbody{overflow:auto;-webkit-overflow-scrolling:touch;padding:8px 12px 24px}
+
+.toc{list-style:none;margin:0;padding:0;direction:rtl}
+.toc li{border-bottom:1px solid var(--line)}
+.toc li:last-child{border-bottom:0}
+.toc button{display:flex;gap:10px;align-items:baseline;width:100%;padding:12px 4px;text-align:right}
+.toc .ord{flex:none;font-family:"Frank Ruhl Libre",serif;font-size:12px;color:var(--ink3);min-width:22px}
+.toc .t{flex:1;min-width:0;font-family:"Noto Serif Hebrew",serif;font-size:15px;line-height:1.45}
+.toc .n{display:block;font-family:"Noto Serif Hebrew",serif;font-size:11.5px;color:var(--brass);margin-top:4px;line-height:1.4}
+
+.luach{direction:rtl}
+.luach h3{font-family:"Frank Ruhl Libre",serif;font-size:17px;margin:4px 0 3px;font-weight:700}
+.luach .sub{font-size:11.5px;color:var(--ink3);margin:0 0 12px;direction:rtl;line-height:1.5}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.wk .hd{font-size:10px;text-align:center;color:var(--ink3);padding:2px 0 5px;font-family:"Frank Ruhl Libre",serif}
+.cell{border:1px solid var(--line);border-radius:7px;background:var(--sunk);min-height:54px;padding:5px 2px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;overflow:hidden}
+.cell.void{border-color:transparent;background:none;min-height:0}
+.cell .num{font-family:"Frank Ruhl Libre",serif;font-size:11px;color:var(--ink3)}
+.cell .tag{font-family:"Noto Serif Hebrew",serif;font-size:10px;line-height:1.25;text-align:center;color:var(--ink2)}
+.cell.sel{background:var(--surface);border-color:var(--line2)}
+.cell.sel .tag{color:var(--tekhelet-ink);font-weight:600}
+.cell[role="button"]{cursor:pointer}
+.cell.now{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft);background:var(--brass-soft)}
+.cell.cur{border-color:var(--tekhelet);box-shadow:0 0 0 2px var(--tekhelet-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:11px;color:var(--ink3)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:5px;vertical-align:-1px}
+
+.sizerow{display:flex;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
+.sizerow .lab{flex:1;font-size:12px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase}
+.sizerow button{border:1px solid var(--line);border-radius:8px;width:44px;height:36px;background:var(--sunk)}
+.toggle{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line);
+  font-size:13px;color:var(--ink2);width:100%;text-align:left}
+.toggle .sw{margin-left:auto;width:44px;height:26px;border-radius:13px;background:var(--line2);position:relative;
+  transition:background .15s;flex:none}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:var(--surface);transition:transform .15s}
+.toggle[aria-pressed="true"] .sw{background:var(--tekhelet)}
+.toggle[aria-pressed="true"] .sw::after{transform:translateX(18px)}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<header class="bar">
+  <button class="iconbtn" id="btnIndex" aria-label="Seder index">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+  </button>
+  <button class="iconbtn" id="btnLuach" aria-label="Season calendar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+  </button>
+  <div class="who"><b id="barTitle">&nbsp;</b><span id="barSub">&nbsp;</span></div>
+  <button class="iconbtn" id="btnSet" aria-label="Reading settings">Aa</button>
+</header>
+
+<main>
+  <section class="today" id="todayCard"></section>
+  <div class="nusach" id="nusachRow" role="group" aria-label="Nusach"></div>
+  <div id="seder"></div>
+  <div class="daynav" id="dayNav"></div>
+  <div class="colophon">
+    <p><strong>Texts.</strong> Nusach Polin and Nusach Ashkenaz (Lita) selichot from Hebrew Wikisource via <a href="https://www.sefaria.org/texts/Liturgy">Sefaria</a>, CC&nbsp;BY-SA&nbsp;4.0. Edot HaMizrach selichot from Torat Emet, public domain.</p>
+    <p><strong>Which day.</strong> Day assignment follows the standard Ashkenaz selichot luach: selichot begin the Motzaei Shabbat before Rosh Hashanah, moving a week earlier when Rosh Hashanah falls on Monday or Tuesday. None are said on Shabbat or on Rosh Hashanah itself.</p>
+    <p><strong>Timing.</strong> The Hebrew date rolls over at 7:00 PM local time as an approximation of nightfall, so a seder opened late at night is the one for that night and the following morning. Open the calendar to pick any day directly. Follow your congregation's practice wherever it differs.</p>
+  </div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="grab"></div>
+  <div class="tabs">
+    <button id="tabToc" aria-selected="true">Seder</button>
+    <button id="tabLuach" aria-selected="false">Season</button>
+    <button id="tabSet" aria-selected="false">Reading</button>
+    <button class="close" id="sheetClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="sheetbody" id="sheetBody"></div>
+</div>
+
+<script>
+"use strict";
+const DATA = {};
+const FILES = {polin:"data/polin.json", lita:"data/lita.json", mizrach:"data/mizrach.json"};
+async function ensure(n){
+  if (DATA[n]) return;
+  const r = await fetch(FILES[n], {cache:"force-cache"});
+  if (!r.ok) throw new Error("Could not load " + FILES[n]);
+  DATA[n] = await r.json();
+}
+
+/* ===== Hebrew calendar. Absolute day = RD, where 1 = 1 Jan 1 CE. ===== */
+const gLeap = y => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+const MD = [31,28,31,30,31,30,31,31,30,31,30,31];
+function gToAbs(y,m,d){
+  let n = d;
+  for (let i=0;i<m-1;i++) n += MD[i];
+  if (m>2 && gLeap(y)) n++;
+  const p = y-1;
+  return n + 365*p + Math.floor(p/4) - Math.floor(p/100) + Math.floor(p/400);
+}
+function absToG(a){
+  let y = Math.floor(a/366);
+  while (a >= gToAbs(y+1,1,1)) y++;
+  let m = 1;
+  while (a > gToAbs(y,m,MD[m-1] + ((m===2 && gLeap(y)) ? 1 : 0))) m++;
+  return {y, m, d: a - gToAbs(y,m,1) + 1};
+}
+const hLeap = y => ((7*y+1) % 19) < 7;
+function hElapsed(year){
+  const me = 235*Math.floor((year-1)/19) + 12*((year-1)%19) + Math.floor((7*((year-1)%19)+1)/19);
+  const pe = 204 + 793*(me%1080);
+  const he = 5 + 12*me + 793*Math.floor(me/1080) + Math.floor(pe/1080);
+  let day = 1 + 29*me + Math.floor(he/24);
+  const parts = 1080*(he%24) + pe%1080;
+  if (parts >= 19440
+      || (day%7 === 2 && parts >= 9924 && !hLeap(year))
+      || (day%7 === 1 && parts >= 16789 && hLeap(year-1))) day++;
+  if (day%7 === 0 || day%7 === 3 || day%7 === 5) day++;
+  return day;
+}
+const tishrei1 = y => hElapsed(y) - 1373428;
+
+const ONES = ["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
+const TENS = ["","י","כ","ל"];
+function gem(n){
+  if (n === 15) return "ט״ו";
+  if (n === 16) return "ט״ז";
+  const s = TENS[Math.floor(n/10)] + ONES[n%10];
+  return s.length > 1 ? s.slice(0,-1) + "״" + s.slice(-1) : s + "׳";
+}
+const WD  = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+const WDS = ["א","ב","ג","ד","ה","ו","ש"];
+const M_TISHREI = "תשרי", M_ELUL = "אלול";
+/* Only Elul and 1-10 Tishrei ever occur, so this stays exact. */
+function hebLabel(off){
+  return off >= 0 ? {d: off+1, mon: M_TISHREI} : {d: 30+off, mon: M_ELUL};
+}
+
+/* ===== Day assignment, per the standard Ashkenaz selichot luach.
+   Keys are offsets in days from 1 Tishrei; 1 = Monday ... 6 = Shabbat. ===== */
+const ASHK = {
+  1:{"-8":"d1","-7":"d2","-6":"d3","-5":"d4","-4":"d5","-3":"d6","-1":"erh","2":"tg","3":"t2","4":"t3","6":"t4","7":"t5","8":"eyk"},
+  2:{"-9":"d1","-8":"d2","-7":"d3","-6":"d4","-5":"d5","-4":"d6","-2":"d7","-1":"erh","2":"tg","3":"t2","5":"t3","6":"t4","7":"t5","8":"eyk"},
+  4:{"-4":"d1","-3":"d2","-2":"d3","-1":"erh","3":"tg","4":"t2","5":"t3","6":"t4","7":"t5","8":"eyk"},
+  6:{"-6":"d1","-5":"d2","-4":"d3","-3":"d4","-2":"d5","-1":"erh","2":"tg","3":"t2","4":"t3","5":"t4","6":"t5","8":"eyk"}
+};
+/* Years in which many swap the 4th and 5th days of the Ten Days,
+   so that the fifth is said on a day with keriat haTorah. */
+const SWAP = {2:["t4","t5"], 6:["t4","t5"]};
+const RH_DAY_EN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Shabbat"];
+const EN = {d1:"First day",d2:"Second day",d3:"Third day",d4:"Fourth day",d5:"Fifth day",d6:"Sixth day",d7:"Seventh day",
+  erh:"Erev Rosh Hashanah", tg:"Fast of Gedaliah", t2:"Second day of the Ten Days",
+  t3:"Third day of the Ten Days", t4:"Fourth day of the Ten Days", t5:"Fifth day of the Ten Days",
+  eyk:"Erev Yom Kippur", single:"Daily seder"};
+
+function seasonFor(hy, nusach){
+  const t1 = tishrei1(hy), wd = ((t1%7)+7)%7;
+  const days = [];
+  if (nusach === "mizrach"){
+    for (let off=-28; off<=9; off++){
+      const abs = t1+off, w = ((abs%7)+7)%7;
+      let kind = "sel", key = "single";
+      if (off === 9){ kind = "yk"; key = null; }
+      else if (off === 0 || off === 1){ kind = "rh"; key = null; }
+      else if (w === 6){ kind = "shabbat"; key = null; }
+      days.push({abs, off, w, kind, key});
+    }
+  } else {
+    const map = ASHK[wd] || {};
+    const offs = Object.keys(map).map(Number);
+    const lo = Math.min.apply(null, offs);
+    for (let off=lo; off<=9; off++){
+      const abs = t1+off, w = ((abs%7)+7)%7;
+      const key = map[String(off)] || null;
+      let kind = "none";
+      if (key) kind = "sel";
+      else if (off === 9) kind = "yk";
+      else if (off === 0 || off === 1) kind = "rh";
+      else if (w === 6) kind = "shabbat";
+      days.push({abs, off, w, kind, key});
+    }
+  }
+  return {hy, t1, wd, days};
+}
+const hebYearGuess = abs => Math.floor((abs + 1373428) / 365.2468) + 1;
+function findSeason(abs, nusach){
+  const g = hebYearGuess(abs);
+  for (const hy of [g-1, g, g+1, g+2]){
+    const s = seasonFor(hy, nusach);
+    if (abs >= s.days[0].abs && abs <= s.days[s.days.length-1].abs) return {season:s, inSeason:true};
+  }
+  for (const hy of [g, g+1, g+2]){
+    const s = seasonFor(hy, nusach);
+    if (s.days[0].abs > abs) return {season:s, inSeason:false};
+  }
+  return {season: seasonFor(g+1, nusach), inSeason:false};
+}
+
+/* Hebrew date rolls at 19:00 local, an approximation of nightfall. */
+function nowAbs(){
+  const n = new Date();
+  const rolled = n.getHours() >= 19;
+  return {abs: gToAbs(n.getFullYear(), n.getMonth()+1, n.getDate()) + (rolled ? 1 : 0), rolled};
+}
+
+/* ===== state ===== */
+const LS = "ashmoret.v1";
+const S = {nusach:"polin", abs:null, fs:20, swap:false, wake:false};
+try {
+  const st = JSON.parse(localStorage.getItem(LS) || "{}");
+  if (st.nusach) S.nusach = st.nusach;
+  if (st.fs) S.fs = st.fs;
+  if (typeof st.swap === "boolean") S.swap = st.swap;
+} catch(e){}
+if (!FILES[S.nusach]) S.nusach = "polin";
+function save(){
+  try { localStorage.setItem(LS, JSON.stringify({nusach:S.nusach, fs:S.fs, swap:S.swap})); } catch(e){}
+}
+
+const NUS = [
+  {k:"polin",   he:"נוסח ספרד", en:"Polin"},
+  {k:"lita",    he:"נוסח אשכנז", en:"Lita"},
+  {k:"mizrach", he:"עדות המזרח", en:"Mizrach"}
+];
+
+let VIEW = null;
+function compute(){
+  const nw = nowAbs();
+  const target = S.abs == null ? nw.abs : S.abs;
+  const {season, inSeason} = findSeason(target, S.nusach);
+  let entry = season.days.find(d => d.abs === target) || null;
+  let fallback = null;
+  if (!entry || entry.kind !== "sel"){
+    fallback = entry;
+    entry = season.days.find(d => d.kind === "sel" && d.abs >= target)
+         || season.days.filter(d => d.kind === "sel").pop();
+  }
+  VIEW = {season, entry, auto: S.abs == null, fallback, todayAbs: nw.abs, rolled: nw.rolled, inSeason};
+}
+function effKey(entry){
+  if (!entry) return null;
+  if (S.nusach === "mizrach") return "single";
+  const sw = SWAP[VIEW.season.wd];
+  if (S.swap && sw && sw.indexOf(entry.key) >= 0) return entry.key === "t4" ? "t5" : "t4";
+  return entry.key;
+}
+function sederOf(key){
+  const n = DATA[S.nusach];
+  return n.single ? n.single : (n.days[key] || null);
+}
+
+/* ===== render ===== */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/* Source markup is limited to b / i / small / br; everything else is escaped. */
+function safe(html){
+  const marks = [];
+  let t = html.replace(/<\/?(b|i|small|br)\s*\/?>/gi, m => { marks.push(m); return "\uE000" + (marks.length-1) + "\uE001"; });
+  t = esc(t);
+  return t.replace(/\uE000(\d+)\uE001/g, (m,i) => marks[+i]);
+}
+const stripTags = s => s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+function civil(abs){
+  const g = absToG(abs);
+  return new Date(Date.UTC(g.y, g.m-1, g.d)).toLocaleDateString(undefined,
+    {weekday:"short", month:"short", day:"numeric", year:"numeric", timeZone:"UTC"});
+}
+
+function renderTop(){
+  const e = VIEW.entry, key = effKey(e), sed = sederOf(key);
+  const hl = hebLabel(e.off);
+  $("barTitle").textContent = sed ? sed.he : "";
+  $("barSub").textContent = civil(e.abs);
+
+  const notes = [];
+  if (!VIEW.inSeason){
+    notes.push({cls:"plain", html:"Outside the selichot season. Showing the first day of the coming season, <b>" + civil(e.abs) + "</b>."});
+  } else if (VIEW.auto && VIEW.fallback){
+    const why = VIEW.fallback.kind === "shabbat" ? "No selichot are said on Shabbat."
+              : VIEW.fallback.kind === "rh"      ? "No selichot are said on Rosh Hashanah."
+              : VIEW.fallback.kind === "yk"      ? "Yom Kippur. Selichot are said within the day's own tefillot."
+              : "No selichot today.";
+    notes.push({cls:"plain", html: why + " Showing the next selichot day."});
+  } else if (VIEW.auto && VIEW.rolled){
+    notes.push({cls:"plain", html:"It is past nightfall, so this is the seder for <b>tonight and tomorrow morning</b>."});
+  }
+  if (!VIEW.auto){
+    notes.push({cls:"plain", html:'Showing a day you picked. <button class="lk" id="backToday">Back to today</button>'});
+  }
+  const sw = SWAP[VIEW.season.wd];
+  if (S.nusach !== "mizrach" && sw && e.key && sw.indexOf(e.key) >= 0){
+    notes.push({cls:"", html:"Rosh Hashanah fell on " + RH_DAY_EN[VIEW.season.wd] +
+      " this year, so many congregations swap the fourth and fifth days of the Ten Days to say the fifth on a Torah-reading day. " +
+      '<button class="lkb" id="swapBtn">' + (S.swap ? "Swapped order is on. Undo" : "Use the swapped order") + "</button>"});
+  }
+  if (S.nusach === "mizrach"){
+    notes.push({cls:"plain", html:"Edot HaMizrach say essentially this same seder each day from 2 Elul. Additions vary during the Ten Days of Repentance, and communities differ on Shabbat."});
+  }
+
+  $("todayCard").innerHTML =
+    '<div class="top">' +
+      '<div class="stamp"><div class="d">' + gem(hl.d) + '</div><div class="m">' + hl.mon + '</div></div>' +
+      '<div class="meta">' +
+        '<div class="eyebrow">' + (e.w === 6 ? WD[6] : "יום " + WD[e.w]) + " · " + (EN[key] || "") + '</div>' +
+        '<h1>' + (sed ? sed.he : "") + '</h1>' +
+        '<div class="civil">' + civil(e.abs) + '</div>' +
+      '</div>' +
+    '</div>' +
+    notes.map(n => '<div class="note ' + n.cls + '"><span class="dot"></span><span>' + n.html + '</span></div>').join("");
+
+  const bt = $("backToday");
+  if (bt) bt.onclick = () => { S.abs = null; compute(); renderAll(); scrollTo(0,0); };
+  const sb = $("swapBtn");
+  if (sb) sb.onclick = () => { S.swap = !S.swap; save(); compute(); renderAll(); scrollTo(0,0); };
+
+  $("nusachRow").innerHTML = NUS.map(n =>
+    '<button data-n="' + n.k + '" aria-pressed="' + (n.k === S.nusach) + '">' +
+    '<span class="n1">' + n.he + '</span><span class="n2">' + n.en + '</span></button>').join("");
+  $("nusachRow").querySelectorAll("button").forEach(b => b.onclick = async () => {
+    if (b.dataset.n === S.nusach) return;
+    const prevNusach = S.nusach, keep = VIEW.auto ? null : VIEW.entry.abs;
+    b.textContent = "\u2026";
+    try { await ensure(b.dataset.n); }
+    catch(e){ renderTop(); status("That nusach could not be loaded. Check your connection and try again."); return; }
+    S.nusach = b.dataset.n; S.abs = keep; save();
+    if (prevNusach !== S.nusach) { compute(); renderAll(); scrollTo(0,0); }
+  });
+}
+
+function renderSeder(){
+  const sed = sederOf(effKey(VIEW.entry));
+  if (!sed){ $("seder").innerHTML = ""; return; }
+  $("seder").innerHTML = sed.p.map((p,i) => {
+    let lines = p.l;
+    /* Drop a leading line that is only the piyut's number plus its rubric,
+       since both already appear in this section's header. */
+    if (lines.length){
+      const bare = stripTags(lines[0].replace(/<small>[\s\S]*?<\/small>/gi,""));
+      if (/^[א-ת]{1,4}[.׳]?$/.test(bare) || bare === "") {
+        if (stripTags(lines[0]) !== "") lines = lines.slice(1);
+      }
+    }
+    return '<section class="piyut" id="p' + i + '">' +
+      '<div class="phead"><span class="ord">' + gem(i+1) + '</span><span class="pt">' + esc(p.t) + '</span></div>' +
+      (p.n ? '<div class="rubric">' + esc(p.n) + '</div>' : "") +
+      lines.map(l => '<p class="ln">' + safe(l) + '</p>').join("") +
+      '</section>';
+  }).join("");
+
+  const days = VIEW.season.days.filter(d => d.kind === "sel");
+  const idx = days.findIndex(d => d.abs === VIEW.entry.abs);
+  const prev = idx > 0 ? days[idx-1] : null;
+  const next = (idx >= 0 && idx < days.length-1) ? days[idx+1] : null;
+  const lbl = d => {
+    const hl = hebLabel(d.off);
+    if (S.nusach === "mizrach") return gem(hl.d) + " " + hl.mon;
+    const s = sederOf(d.key);
+    return s ? s.he : "";
+  };
+  $("dayNav").innerHTML =
+    '<button ' + (prev ? 'data-a="' + prev.abs + '"' : "disabled") + '><span class="lbl">Previous</span><span class="val">' + (prev ? lbl(prev) : "—") + '</span></button>' +
+    '<button ' + (next ? 'data-a="' + next.abs + '"' : "disabled") + '><span class="lbl">Next</span><span class="val">' + (next ? lbl(next) : "—") + '</span></button>';
+  $("dayNav").querySelectorAll("button[data-a]").forEach(b => b.onclick = () => {
+    S.abs = +b.dataset.a; compute(); renderAll(); scrollTo(0,0);
+  });
+}
+function renderAll(){ renderTop(); renderSeder(); if (sheetOpen) renderSheet(); }
+
+/* ===== sheet ===== */
+let sheetOpen = false, tab = "toc";
+function openSheet(t){ tab = t; sheetOpen = true; $("scrim").classList.add("open"); $("sheet").classList.add("open"); renderSheet(); }
+function closeSheet(){ sheetOpen = false; $("scrim").classList.remove("open"); $("sheet").classList.remove("open"); }
+$("btnIndex").onclick = () => openSheet("toc");
+$("btnLuach").onclick = () => openSheet("luach");
+$("btnSet").onclick   = () => openSheet("set");
+$("scrim").onclick = closeSheet;
+$("sheetClose").onclick = closeSheet;
+$("tabToc").onclick = () => openSheet("toc");
+$("tabLuach").onclick = () => openSheet("luach");
+$("tabSet").onclick = () => openSheet("set");
+addEventListener("keydown", e => { if (e.key === "Escape" && sheetOpen) closeSheet(); });
+
+function renderSheet(){
+  const ids = ["tabToc","tabLuach","tabSet"], keys = ["toc","luach","set"];
+  ids.forEach((id,i) => $(id).setAttribute("aria-selected", keys[i] === tab));
+  const b = $("sheetBody");
+
+  if (tab === "toc"){
+    const sed = sederOf(effKey(VIEW.entry));
+    b.innerHTML = '<ul class="toc">' + sed.p.map((p,i) =>
+      '<li><button data-p="' + i + '"><span class="ord">' + gem(i+1) + '</span>' +
+      '<span class="t">' + esc(p.t) + (p.n ? '<span class="n">' + esc(p.n) + '</span>' : "") +
+      '</span></button></li>').join("") + '</ul>';
+    b.querySelectorAll("button[data-p]").forEach(x => x.onclick = () => {
+      closeSheet();
+      const el = $("p" + x.dataset.p);
+      const y = el.getBoundingClientRect().top + scrollY - 64;
+      scrollTo({top:y, behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"});
+    });
+
+  } else if (tab === "luach"){
+    const s = VIEW.season;
+    const cells = [];
+    const pad = ((s.days[0].abs % 7) + 7) % 7;
+    for (let i=0;i<pad;i++) cells.push('<div class="cell void"></div>');
+    for (const d of s.days){
+      const hl = hebLabel(d.off);
+      let cls = "cell", tag = "";
+      if (d.kind === "sel"){
+        cls += " sel";
+        if (S.nusach === "mizrach") tag = "סליחות";
+        else { const sd = sederOf(d.key); tag = sd ? sd.he.replace(/^ל/,"") : ""; }
+      } else if (d.kind === "rh"){ tag = d.off === 0 ? "א׳ ר״ה" : "ב׳ ר״ה"; }
+      else if (d.kind === "yk"){ tag = "יום כיפור"; }
+      else if (d.kind === "shabbat"){ tag = "שבת"; }
+      if (d.abs === VIEW.todayAbs) cls += " now";
+      if (d.abs === VIEW.entry.abs) cls += " cur";
+      cells.push('<div class="' + cls + '"' + (d.kind === "sel" ? ' role="button" tabindex="0" data-a="' + d.abs + '"' : "") + '>' +
+        '<span class="num">' + gem(hl.d) + '</span><span class="tag">' + tag + '</span></div>');
+    }
+    while (cells.length % 7) cells.push('<div class="cell void"></div>');
+    const hundreds = Math.floor((s.hy % 1000) / 100);
+    const yearHe = "ה׳" + ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"][hundreds] + gem(s.hy % 100);
+    b.innerHTML = '<div class="luach">' +
+      '<h3>לוח הסליחות — ' + yearHe + '</h3>' +
+      '<p class="sub">' + s.hy + " · Rosh Hashanah falls on " + RH_DAY_EN[s.wd] + "</p>" +
+      '<div class="wk">' + WDS.map(w => '<div class="hd">' + w + '</div>').join("") + '</div>' +
+      '<div class="wk">' + cells.join("") + '</div>' +
+      '<div class="legend">' +
+        '<span><i style="background:var(--surface);border:1px solid var(--line2)"></i>Selichot</span>' +
+        '<span><i style="background:var(--sunk);border:1px solid var(--line)"></i>None said</span>' +
+        '<span><i style="background:var(--brass-soft);border:1px solid var(--brass)"></i>Today</span>' +
+        '<span><i style="background:var(--tekhelet-soft);border:1px solid var(--tekhelet)"></i>Showing</span>' +
+      '</div></div>';
+    b.querySelectorAll("[data-a]").forEach(c => {
+      const go = () => { S.abs = +c.dataset.a; compute(); renderAll(); closeSheet(); scrollTo(0,0); };
+      c.onclick = go;
+      c.onkeydown = ev => { if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); go(); } };
+    });
+
+  } else {
+    b.innerHTML =
+      '<div class="sizerow"><span class="lab">Text size</span>' +
+        '<button id="fsDown" aria-label="Smaller text">A−</button>' +
+        '<button id="fsUp" aria-label="Larger text">A+</button></div>' +
+      '<button class="toggle" id="wakeT" aria-pressed="' + S.wake + '">Keep the screen awake<span class="sw"></span></button>' +
+      '<p style="font-size:12px;color:var(--ink3);line-height:1.7;margin:16px 0 0">' +
+      "The page follows your device's light and dark setting. Nusach and text size are remembered on this device.</p>";
+    const set = v => {
+      S.fs = Math.max(15, Math.min(34, v));
+      document.documentElement.style.setProperty("--fs", S.fs + "px");
+      save();
+    };
+    $("fsUp").onclick = () => set(S.fs + 2);
+    $("fsDown").onclick = () => set(S.fs - 2);
+    $("wakeT").onclick = () => { S.wake = !S.wake; $("wakeT").setAttribute("aria-pressed", S.wake); applyWake(); };
+  }
+}
+
+/* ===== screen wake lock ===== */
+let wl = null;
+async function applyWake(){
+  try {
+    if (S.wake && "wakeLock" in navigator){ wl = await navigator.wakeLock.request("screen"); }
+    else if (wl){ await wl.release(); wl = null; }
+  } catch(e){}
+}
+addEventListener("visibilitychange", () => { if (S.wake && document.visibilityState === "visible") applyWake(); });
+
+/* ===== reading progress ===== */
+let ticking = false;
+addEventListener("scroll", () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    $("prog").style.width = (h > 0 ? Math.min(100, Math.max(0, scrollY / h * 100)) : 0) + "%";
+    ticking = false;
+  });
+}, {passive:true});
+
+function status(msg){
+  $("seder").innerHTML = '<p style="color:var(--ink3);font-size:13px;line-height:1.6;padding:28px 2px">' + msg + '</p>';
+}
+async function boot(){
+  document.documentElement.style.setProperty("--fs", S.fs + "px");
+  status("Loading the selichot text\u2026");
+  try { await ensure(S.nusach); }
+  catch(e){ status("The selichot text could not be loaded. Reload the page once you are back online."); return; }
+  compute();
+  renderAll();
+}
+boot();
+
+if ("serviceWorker" in navigator){
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
+
+</body>
+</html>

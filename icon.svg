@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Selichot">
+  <rect width="512" height="512" rx="112" fill="#111A26"/>
+  <path d="M256 96a160 160 0 1 0 96 288 176 176 0 0 1-96-288z" fill="#D8AE5D"/>
+  <circle cx="368" cy="150" r="13" fill="#8FB2E8"/>
+  <circle cx="412" cy="206" r="9" fill="#8FB2E8" opacity=".75"/>
+  <circle cx="340" cy="214" r="7" fill="#8FB2E8" opacity=".55"/>
+</svg>
