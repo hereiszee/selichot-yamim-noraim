@@ -286,6 +286,15 @@ function gem(n){
   const s = TENS[Math.floor(n/10)] + ONES[n%10];
   return s.length > 1 ? s.slice(0,-1) + "״" + s.slice(-1) : s + "׳";
 }
+const HUNDREDS = ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"];
+/* Gematria for a whole year number, so the gershayim lands before the final
+   letter of the run rather than after a lone tens digit: 790 is תש״צ. */
+function gemLetters(n){
+  const rest = n % 100;
+  const body = HUNDREDS[Math.floor((n % 1000) / 100)]
+    + (rest === 15 ? "טו" : rest === 16 ? "טז" : TENS[Math.floor(rest/10)] + ONES[rest%10]);
+  return body.length > 1 ? body.slice(0,-1) + "״" + body.slice(-1) : body + "׳";
+}
 const WD  = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
 const WDS = ["א","ב","ג","ד","ה","ו","ש"];
 const M_TISHREI = "תשרי", M_ELUL = "אלול";
@@ -577,8 +586,7 @@ function renderSheet(){
         '<span class="num">' + gem(hl.d) + '</span><span class="tag">' + tag + '</span></div>');
     }
     while (cells.length % 7) cells.push('<div class="cell void"></div>');
-    const hundreds = Math.floor((s.hy % 1000) / 100);
-    const yearHe = "ה׳" + ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"][hundreds] + gem(s.hy % 100);
+    const yearHe = "ה׳" + gemLetters(s.hy % 1000);
     b.innerHTML = '<div class="luach">' +
       '<h3>לוח הסליחות — ' + yearHe + '</h3>' +
       '<p class="sub">' + s.hy + " · Rosh Hashanah falls on " + RH_DAY_EN[s.wd] + "</p>" +
