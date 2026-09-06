@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>Ashmoret Selichot</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Noto+Serif+Hebrew:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Noto+Serif+Hebrew:wght@400;500;600&family=David+Libre:wght@400;500;700&family=Noto+Sans+Hebrew:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root{
   --paper:#EBEEF1; --surface:#FCFDFE; --sunk:#E1E6EA;
@@ -23,7 +23,8 @@
   --tekhelet:#2C4C86; --tekhelet-ink:#2C4C86; --tekhelet-soft:#DFE7F4;
   --brass:#8A6212; --brass-soft:#F2E6C9;
   --shadow:0 1px 2px rgba(19,26,33,.06),0 8px 24px -12px rgba(19,26,33,.18);
-  --fs:20px;
+  --fs:22px;
+  --heb:"David Libre","Noto Serif Hebrew",serif;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -116,11 +117,15 @@ main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
 }
 .phead .pt{flex:1;min-width:0;font-family:"Frank Ruhl Libre",serif;font-size:15px;font-weight:500;color:var(--ink2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rubric{direction:rtl;font-family:"Noto Serif Hebrew",serif;font-size:12.5px;color:var(--brass);margin:-4px 0 12px;line-height:1.5}
+.rubric{direction:rtl;font-family:var(--heb);font-size:13px;color:var(--brass);margin:-4px 0 12px;line-height:1.5}
 .ln{
-  direction:rtl;font-family:"Noto Serif Hebrew",serif;font-size:var(--fs);line-height:2.05;
+  direction:rtl;font-family:var(--heb);font-size:var(--fs);line-height:2.1;
   margin:0 0 .55em;text-align:right;
 }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .ln{-webkit-font-smoothing:antialiased}
+}
+:root[data-theme="dark"] .ln{-webkit-font-smoothing:antialiased}
 .ln b{font-weight:600;color:var(--tekhelet-ink)}
 .ln small{display:block;font-size:.66em;color:var(--ink3);line-height:1.6;margin:.45em 0;font-style:normal}
 .ln:last-child{margin-bottom:0}
@@ -162,7 +167,7 @@ main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
 .toc li:last-child{border-bottom:0}
 .toc button{display:flex;gap:10px;align-items:baseline;width:100%;padding:12px 4px;text-align:right}
 .toc .ord{flex:none;font-family:"Frank Ruhl Libre",serif;font-size:12px;color:var(--ink3);min-width:22px}
-.toc .t{flex:1;min-width:0;font-family:"Noto Serif Hebrew",serif;font-size:15px;line-height:1.45}
+.toc .t{flex:1;min-width:0;font-family:var(--heb);font-size:15px;line-height:1.45}
 .toc .n{display:block;font-family:"Noto Serif Hebrew",serif;font-size:11.5px;color:var(--brass);margin-top:4px;line-height:1.4}
 
 .luach{direction:rtl}
@@ -183,6 +188,12 @@ main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:11px;color:var(--ink3)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:5px;vertical-align:-1px}
 
+.fontgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 0 14px;border-bottom:1px solid var(--line)}
+.fontgrid button{border:1px solid var(--line);border-radius:10px;background:var(--sunk);padding:10px 8px 12px;text-align:center}
+.fontgrid button[aria-pressed="true"]{border-color:var(--tekhelet);box-shadow:0 0 0 2px var(--tekhelet-soft);background:var(--surface)}
+.fontgrid .smp{display:block;direction:rtl;font-size:22px;line-height:1.7;color:var(--ink)}
+.fontgrid .nm{display:block;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-top:5px}
+.fontgrid button[aria-pressed="true"] .nm{color:var(--tekhelet-ink);font-weight:600}
 .sizerow{display:flex;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
 .sizerow .lab{flex:1;font-size:12px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase}
 .sizerow button{border:1px solid var(--line);border-radius:8px;width:44px;height:36px;background:var(--sunk)}
@@ -372,16 +383,32 @@ function nowAbs(){
 
 /* ===== state ===== */
 const LS = "ashmoret.v1";
-const S = {nusach:"polin", abs:null, fs:20, swap:false, wake:false};
+const S = {nusach:"polin", abs:null, fs:22, font:"david", swap:false, wake:false};
 try {
   const st = JSON.parse(localStorage.getItem(LS) || "{}");
   if (st.nusach) S.nusach = st.nusach;
   if (st.fs) S.fs = st.fs;
+  if (st.font) S.font = st.font;
   if (typeof st.swap === "boolean") S.swap = st.swap;
 } catch(e){}
 if (!FILES[S.nusach]) S.nusach = "polin";
 function save(){
-  try { localStorage.setItem(LS, JSON.stringify({nusach:S.nusach, fs:S.fs, swap:S.swap})); } catch(e){}
+  try { localStorage.setItem(LS, JSON.stringify({nusach:S.nusach, fs:S.fs, font:S.font, swap:S.swap})); } catch(e){}
+}
+
+/* Vocalised liturgy lives or dies on how the points render, and that depends
+   on the reader's screen and eyes. Noto Serif Hebrew sets the smallest points
+   of the faces tested, which is why a segol can read as a qamats on a phone;
+   David Libre is the default instead, with the others a tap away. */
+const FONTS = [
+  {k:"david", css:'"David Libre","Noto Serif Hebrew",serif', nm:"David Libre"},
+  {k:"serif", css:'"Noto Serif Hebrew",serif',               nm:"Noto Serif"},
+  {k:"frank", css:'"Frank Ruhl Libre",serif',                nm:"Frank Ruhl"},
+  {k:"sans",  css:'"Noto Sans Hebrew",sans-serif',           nm:"Noto Sans"}
+];
+function applyFont(){
+  const f = FONTS.find(x => x.k === S.font) || FONTS[0];
+  document.documentElement.style.setProperty("--heb", f.css);
 }
 
 const NUS = [
@@ -606,12 +633,20 @@ function renderSheet(){
 
   } else {
     b.innerHTML =
+      '<div class="fontgrid">' + FONTS.map(f =>
+        '<button data-f="' + f.k + '" aria-pressed="' + (f.k === S.font) + '">' +
+        '<span class="smp" style="font-family:' + f.css.replace(/"/g,"&quot;") + '">שֶׁמֶךָ</span>' +
+        '<span class="nm">' + f.nm + '</span></button>').join("") + '</div>' +
       '<div class="sizerow"><span class="lab">Text size</span>' +
         '<button id="fsDown" aria-label="Smaller text">A−</button>' +
         '<button id="fsUp" aria-label="Larger text">A+</button></div>' +
       '<button class="toggle" id="wakeT" aria-pressed="' + S.wake + '">Keep the screen awake<span class="sw"></span></button>' +
       '<p style="font-size:12px;color:var(--ink3);line-height:1.7;margin:16px 0 0">' +
-      "The page follows your device's light and dark setting. Nusach and text size are remembered on this device.</p>";
+      "The page follows your device's light and dark setting. Nusach, typeface and text size are remembered on this device.</p>";
+    b.querySelectorAll("button[data-f]").forEach(x => x.onclick = () => {
+      S.font = x.dataset.f; applyFont(); save();
+      b.querySelectorAll("button[data-f]").forEach(y => y.setAttribute("aria-pressed", y.dataset.f === S.font));
+    });
     const set = v => {
       S.fs = Math.max(15, Math.min(34, v));
       document.documentElement.style.setProperty("--fs", S.fs + "px");
@@ -650,6 +685,7 @@ function status(msg){
 }
 async function boot(){
   document.documentElement.style.setProperty("--fs", S.fs + "px");
+  applyFont();
   status("Loading the selichot text\u2026");
   try { await ensure(S.nusach); }
   catch(e){ status("The selichot text could not be loaded. Reload the page once you are back online."); return; }
