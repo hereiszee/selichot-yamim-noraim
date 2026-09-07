@@ -646,7 +646,7 @@ function renderSheet(){
     b.innerHTML =
       '<div class="fontgrid">' + FONTS.map(f =>
         '<button data-f="' + f.k + '" aria-pressed="' + (f.k === S.font) + '">' +
-        '<span class="smp" style="font-family:' + f.css.replace(/"/g,"&quot;") + '">שֶׁמֶךָ</span>' +
+        '<span class="smp" style="font-family:' + f.css.replace(/"/g,"&quot;") + '">שְׁמֶךָ</span>' +
         '<span class="nm">' + f.nm + '</span></button>').join("") + '</div>' +
       '<div class="sizerow"><span class="lab">Text size</span>' +
         '<button id="fsDown" aria-label="Smaller text">A−</button>' +

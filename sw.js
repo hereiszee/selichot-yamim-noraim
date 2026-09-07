@@ -2,7 +2,7 @@
    The point of this file: a shul basement at 1am has no signal. Everything the
    page needs is cached on first visit, so later visits work with no network. */
 
-const VERSION = "v5";
+const VERSION = "v6";
 const DATA_REV = "2";   // must equal DATA_REV in index.html
 const SHELL = "ashmoret-shell-" + VERSION;
 const RUNTIME = "ashmoret-runtime-" + VERSION;
