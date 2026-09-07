@@ -71,9 +71,39 @@ def fix_doubles(s):
     return re.sub("([" + MARKS + "])\\1+", repl, s)
 
 
+def fix_shaping_hacks(s):
+    """Typesetting hacks that break the shaping run, so the browser gives up on
+    the font mid-word and swaps in another one — a letter or two suddenly a
+    different size. Each has a plain, well-supported equivalent that the same
+    files already use for the same words."""
+    out = []
+    for ch in s:
+        if ch in ("‍", "‏"):
+            # ZWJ wedged between vav and holam in עָוֹן, RLM before a maqaf.
+            # עֲוֹנוֹת is written plainly 62 times and with the joiner 165.
+            note("zero-width joiner removed", "◌" + ch, "")
+            continue
+        if ch == "֒":
+            # The only cantillation mark in 1.3M characters, on חַסְדְּךָ. Spurious.
+            note("stray cantillation mark removed", "חַסְדְּ" + ch + "ךָ", "חַסְדְּךָ")
+            continue
+        if ch == "ֺ":
+            # HOLAM HASER FOR VAV, used here on ה ל כ ב ד ר as well as vav.
+            # It is defined for vav alone and most fonts have no anchor for it,
+            # so it drops out of the font. יְהֹוָה appears 3723 times, יְהֺוָה 118.
+            note("holam haser for vav -> holam", "◌" + ch, "◌ֹ")
+            out.append("ֹ")
+            continue
+        if ch == " ":
+            out.append(" ")
+            continue
+        out.append(ch)
+    return "".join(out)
+
+
 def walk(node):
     if isinstance(node, str):
-        return fix_doubles(fix_yerushalayim(fix_sin_dot(node)))
+        return fix_doubles(fix_yerushalayim(fix_sin_dot(fix_shaping_hacks(node))))
     if isinstance(node, list):
         return [walk(x) for x in node]
     if isinstance(node, dict):

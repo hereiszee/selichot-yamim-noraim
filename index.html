@@ -229,6 +229,7 @@ main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
   <div class="colophon">
     <p><strong>Texts.</strong> Nusach Polin and Nusach Ashkenaz (Lita) selichot from Hebrew Wikisource via <a href="https://www.sefaria.org/texts/Liturgy">Sefaria</a>, CC&nbsp;BY-SA&nbsp;4.0. Edot HaMizrach selichot from Torat Emet, public domain.</p>
     <p><strong>Which day.</strong> Day assignment follows the standard Ashkenaz selichot luach: selichot begin the Motzaei Shabbat before Rosh Hashanah, moving a week earlier when Rosh Hashanah falls on Monday or Tuesday. None are said on Shabbat or on Rosh Hashanah itself.</p>
+    <p><strong>The meteg.</strong> The vertical stroke that accompanies many vowels (גְּדֻלַּת) is a stress mark, not a vowel. Every Hebrew typeface tested stacks it directly beneath the vowel, so a tzeiri or segol takes on a vertical stroke and reads as a qamats. It is hidden by default for that reason; turn it back on under Reading.</p>
     <p><strong>Timing.</strong> The Hebrew date rolls over at 7:00 PM local time as an approximation of nightfall, so a seder opened late at night is the one for that night and the following morning. Open the calendar to pick any day directly. Follow your congregation's practice wherever it differs.</p>
   </div>
 </main>
@@ -248,10 +249,14 @@ main{max-width:44rem;margin:0 auto;padding:0 14px 96px}
 <script>
 "use strict";
 const DATA = {};
+/* Bump whenever the texts change, and keep sw.js's DATA_REV equal to it. The
+   files are immutable once fetched, so without a new URL a corrected text
+   never reaches anyone who already has the old one cached. */
+const DATA_REV = "2";
 const FILES = {polin:"data/polin.json", lita:"data/lita.json", mizrach:"data/mizrach.json"};
 async function ensure(n){
   if (DATA[n]) return;
-  const r = await fetch(FILES[n], {cache:"force-cache"});
+  const r = await fetch(FILES[n] + "?r=" + DATA_REV);
   if (!r.ok) throw new Error("Could not load " + FILES[n]);
   DATA[n] = await r.json();
 }
@@ -383,17 +388,18 @@ function nowAbs(){
 
 /* ===== state ===== */
 const LS = "ashmoret.v1";
-const S = {nusach:"polin", abs:null, fs:22, font:"david", swap:false, wake:false};
+const S = {nusach:"polin", abs:null, fs:22, font:"david", meteg:false, swap:false, wake:false};
 try {
   const st = JSON.parse(localStorage.getItem(LS) || "{}");
   if (st.nusach) S.nusach = st.nusach;
   if (st.fs) S.fs = st.fs;
   if (st.font) S.font = st.font;
+  if (typeof st.meteg === "boolean") S.meteg = st.meteg;
   if (typeof st.swap === "boolean") S.swap = st.swap;
 } catch(e){}
 if (!FILES[S.nusach]) S.nusach = "polin";
 function save(){
-  try { localStorage.setItem(LS, JSON.stringify({nusach:S.nusach, fs:S.fs, font:S.font, swap:S.swap})); } catch(e){}
+  try { localStorage.setItem(LS, JSON.stringify({nusach:S.nusach, fs:S.fs, font:S.font, meteg:S.meteg, swap:S.swap})); } catch(e){}
 }
 
 /* Vocalised liturgy lives or dies on how the points render, and that depends
@@ -454,6 +460,11 @@ function safe(html){
   return t.replace(/\uE000(\d+)\uE001/g, (m,i) => marks[+i]);
 }
 const stripTags = s => s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+/* The meteg is a stress mark, not a vowel, and every Hebrew face tested stacks
+   it directly beneath the vowel it accompanies. A tzeiri (two dots) with a
+   vertical stroke under it reads as a qamats; a segol does the same. On a phone
+   that turns into genuine misreading, so it is hidden unless asked for. */
+const points = s => S.meteg ? s : s.replace(/\u05BD/g, "");
 function civil(abs){
   const g = absToG(abs);
   return new Date(Date.UTC(g.y, g.m-1, g.d)).toLocaleDateString(undefined,
@@ -535,9 +546,9 @@ function renderSeder(){
       }
     }
     return '<section class="piyut" id="p' + i + '">' +
-      '<div class="phead"><span class="ord">' + gem(i+1) + '</span><span class="pt">' + esc(p.t) + '</span></div>' +
+      '<div class="phead"><span class="ord">' + gem(i+1) + '</span><span class="pt">' + esc(points(p.t)) + '</span></div>' +
       (p.n ? '<div class="rubric">' + esc(p.n) + '</div>' : "") +
-      lines.map(l => '<p class="ln">' + safe(l) + '</p>').join("") +
+      lines.map(l => '<p class="ln">' + safe(points(l)) + '</p>').join("") +
       '</section>';
   }).join("");
 
@@ -583,7 +594,7 @@ function renderSheet(){
     const sed = sederOf(effKey(VIEW.entry));
     b.innerHTML = '<ul class="toc">' + sed.p.map((p,i) =>
       '<li><button data-p="' + i + '"><span class="ord">' + gem(i+1) + '</span>' +
-      '<span class="t">' + esc(p.t) + (p.n ? '<span class="n">' + esc(p.n) + '</span>' : "") +
+      '<span class="t">' + esc(points(p.t)) + (p.n ? '<span class="n">' + esc(p.n) + '</span>' : "") +
       '</span></button></li>').join("") + '</ul>';
     b.querySelectorAll("button[data-p]").forEach(x => x.onclick = () => {
       closeSheet();
@@ -640,6 +651,7 @@ function renderSheet(){
       '<div class="sizerow"><span class="lab">Text size</span>' +
         '<button id="fsDown" aria-label="Smaller text">A−</button>' +
         '<button id="fsUp" aria-label="Larger text">A+</button></div>' +
+      '<button class="toggle" id="metegT" aria-pressed="' + S.meteg + '">Show the meteg <span style="font-family:var(--heb);font-size:17px">&#1468;&#1469;</span><span class="sw"></span></button>' +
       '<button class="toggle" id="wakeT" aria-pressed="' + S.wake + '">Keep the screen awake<span class="sw"></span></button>' +
       '<p style="font-size:12px;color:var(--ink3);line-height:1.7;margin:16px 0 0">' +
       "The page follows your device's light and dark setting. Nusach, typeface and text size are remembered on this device.</p>";
@@ -655,6 +667,10 @@ function renderSheet(){
     $("fsUp").onclick = () => set(S.fs + 2);
     $("fsDown").onclick = () => set(S.fs - 2);
     $("wakeT").onclick = () => { S.wake = !S.wake; $("wakeT").setAttribute("aria-pressed", S.wake); applyWake(); };
+    $("metegT").onclick = () => {
+      S.meteg = !S.meteg; $("metegT").setAttribute("aria-pressed", S.meteg);
+      save(); renderSeder();
+    };
   }
 }
 
